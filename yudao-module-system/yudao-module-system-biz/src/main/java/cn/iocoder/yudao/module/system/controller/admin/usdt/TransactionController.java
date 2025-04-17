@@ -71,7 +71,7 @@ public class TransactionController {
             // 构造请求参数
             BigDecimal amount = BigDecimal.valueOf(reqVO.getAmount()).setScale(2, RoundingMode.HALF_UP);
             Map<String, String> params = new HashMap<>();
-            params.put("address", ADDRESS);
+//            params.put("address", ADDRESS);
             params.put("trade_type", TRADE_TYPE);
             params.put("order_id", orderId);
             params.put("amount", amount.toString());
