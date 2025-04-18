@@ -11,6 +11,7 @@ import java.util.List;
 public class OrderRequest extends PageParam {
     private String orderId;
     private String email;
+    private String token;
     private BigDecimal total;
     private LocalDateTime date;
     private List<OrderItemRequest> items;

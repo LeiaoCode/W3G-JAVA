@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.common.util.collection.SetUtils;
 import cn.iocoder.yudao.framework.tenant.core.util.TenantUtils;
 import cn.iocoder.yudao.module.system.controller.admin.auth.vo.AuthLoginRespVO;
 import cn.iocoder.yudao.module.system.controller.admin.auth.vo.AuthRegisterReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.shop.OrderMapper;
 import cn.iocoder.yudao.module.system.controller.admin.usdt.domain.TransactionRequest;
 import cn.iocoder.yudao.module.system.controller.admin.usdt.service.OrdersCallbackService;
 import cn.iocoder.yudao.module.system.dal.dataobject.orders.OrdersDO;
@@ -24,12 +25,16 @@ public class OrdersCallbackController {
     private final OrdersCallbackService ordersCallbackService;
     private final AdminAuthService authService;
     private final OrdersMapper ordersMapper;
+    private final OrderMapper orderMapper;
     private final PermissionService permissionService;
-    public OrdersCallbackController(OrdersCallbackService ordersCallbackService, AdminAuthService authService, OrdersMapper ordersMapper,PermissionService permissionService) {
+
+    public OrdersCallbackController(OrdersCallbackService ordersCallbackService, AdminAuthService authService, OrdersMapper ordersMapper, PermissionService permissionService,
+                                    OrderMapper orderMapper) {
         this.ordersCallbackService = ordersCallbackService;
         this.authService = authService;
         this.ordersMapper = ordersMapper;
         this.permissionService = permissionService;
+        this.orderMapper = orderMapper;
     }
 
     /**
@@ -55,6 +60,34 @@ public class OrdersCallbackController {
             createReqVO.setUsername(order.getUsername());
             AuthLoginRespVO authLoginRespVO = authService.registerNoValidateCaptcha(createReqVO);
             permissionService.AutoAssignUserRole(authLoginRespVO.getUserId(), SetUtils.asSet(159L));
+            // 返回成功响应
+            return ResponseEntity.ok().body("ok");
+
+        } catch (IllegalArgumentException e) {
+            // 签名验证失败或其他业务逻辑错误
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (Exception e) {
+            // 记录异常日志
+            ordersCallbackService.logError(e);
+            return ResponseEntity.internalServerError().body("Internal server error");
+        }
+    }
+
+    /**
+     * 异步回调接口，接收 Epusdt 的支付通知
+     *
+     * @param requestTransaction 回调请求体
+     * @return 响应结果
+     */
+    @PostMapping("/orderCallback")
+    @PermitAll
+    public ResponseEntity<?> orderCallback(@RequestBody TransactionRequest requestTransaction) {
+        try {
+            // 验证签名
+            ordersCallbackService.verifySignature(requestTransaction);
+            // 处理订单状态
+            orderMapper.updatePaymentStatusByOrderId(requestTransaction.getOrder_id(),1);
             // 返回成功响应
             return ResponseEntity.ok().body("ok");
 

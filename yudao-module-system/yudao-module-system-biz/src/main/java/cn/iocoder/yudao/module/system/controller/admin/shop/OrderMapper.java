@@ -3,6 +3,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+@Mapper
 public interface OrderMapper {
 
     @Insert("INSERT INTO orders(order_id, email, total, date) VALUES(#{orderId}, #{email}, #{total}, #{date})")
@@ -27,4 +28,13 @@ public interface OrderMapper {
 
     @Select("SELECT id, order_id AS orderId, email, total, date FROM orders")
     List<Order> selectAllOrders();
+
+    /**
+     * 根据订单号更新付款状态
+     * @param orderId 订单编号
+     * @param status 付款状态(0=未支付,1=已支付,2=已退款等)
+     * @return 更新记录数
+     */
+    @Update("UPDATE orders SET payment_status = #{status} WHERE order_id = #{orderId}")
+    int updatePaymentStatusByOrderId(@Param("orderId") String orderId, @Param("status") Integer status);
 }
