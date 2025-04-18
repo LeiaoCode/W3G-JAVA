@@ -57,6 +57,7 @@ public class OrderController {
         // 构造 Order 实体
         Order order = new Order();
         Long userId = WebFrameworkUtils.getLoginUserId();
+        System.out.println(userId);
         order.setOrderId(orderRequest.getOrderId());
         order.setEmail(orderRequest.getEmail());
         order.setTotal(orderRequest.getTotal());

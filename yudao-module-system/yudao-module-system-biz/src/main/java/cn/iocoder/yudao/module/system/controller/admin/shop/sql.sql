@@ -7,8 +7,8 @@ CREATE TABLE `orders`
     `user_id`        VARCHAR(100)   default '' NOT NULL,
     `email`          VARCHAR(255)   default '' NOT NULL,
     `total`          DECIMAL(10, 2) default 0  NOT NULL,
-    `payment_url`    int            default 0  NOT NULL,
-    `payment_status` VARCHAR(255)   default '' NOT NULL,
+    `payment_url`    VARCHAR(255)   default '' NOT NULL,
+    `payment_status` int            default 0  NOT NULL,
     `date`           DATETIME                  NOT NULL,
     INDEX (`email`)
 ) ENGINE = InnoDB
