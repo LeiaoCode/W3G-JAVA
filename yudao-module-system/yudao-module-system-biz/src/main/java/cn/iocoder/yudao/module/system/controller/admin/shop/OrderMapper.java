@@ -1,5 +1,4 @@
 package cn.iocoder.yudao.module.system.controller.admin.shop;
-
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -25,4 +24,7 @@ public interface OrderMapper {
 
     @Select("SELECT id, order_id AS orderId, name, price, quantity FROM order_items WHERE order_id = #{orderId}")
     List<OrderItem> selectItemsByOrderId(@Param("orderId") Long orderId);
+
+    @Select("SELECT id, order_id AS orderId, email, total, date FROM orders")
+    List<Order> selectAllOrders();
 }
