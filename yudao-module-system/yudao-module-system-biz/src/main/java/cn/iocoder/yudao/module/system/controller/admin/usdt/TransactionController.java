@@ -71,7 +71,10 @@ public class TransactionController {
             // 构造请求参数
             BigDecimal amount = BigDecimal.valueOf(reqVO.getAmount()).setScale(2, RoundingMode.HALF_UP);
             Map<String, String> params = new HashMap<>();
-//            params.put("address", ADDRESS);
+            // 根据 token 的值是否存在，决定是否添加 address 参数
+            if (reqVO.getToken() != null && !reqVO.getToken().isEmpty()) {
+                params.put("address", reqVO.getToken());
+            }
             params.put("trade_type", TRADE_TYPE);
             params.put("order_id", orderId);
             params.put("amount", amount.toString());
