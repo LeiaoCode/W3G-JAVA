@@ -19,6 +19,7 @@ public class Order {
     private String email;
 
     private BigDecimal total;
+    private int paymentStatus;
 
     private LocalDateTime date;
 

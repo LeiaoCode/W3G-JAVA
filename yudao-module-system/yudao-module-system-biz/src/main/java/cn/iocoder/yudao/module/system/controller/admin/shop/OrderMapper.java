@@ -20,13 +20,13 @@ public interface OrderMapper {
     })
     int insertOrderItems(@Param("items") List<OrderItem> items);
 
-    @Select("SELECT id, order_id AS orderId, email, total, date FROM orders WHERE email = #{email}")
+    @Select("SELECT id, order_id AS orderId, email,payment_status as paymentStatus,total, date FROM orders WHERE email = #{email}")
     List<Order> selectOrdersByEmail(@Param("email") String email);
 
-    @Select("SELECT id, order_id AS orderId, name, price, quantity FROM order_items WHERE order_id = #{orderId}")
+    @Select("SELECT id, order_id AS orderId, payment_status as paymentStatus,name, price, quantity FROM order_items WHERE order_id = #{orderId}")
     List<OrderItem> selectItemsByOrderId(@Param("orderId") Long orderId);
 
-    @Select("SELECT id, order_id AS orderId, email, total, date FROM orders")
+    @Select("SELECT id, order_id AS orderId, email, total, payment_status as paymentStatus,date FROM orders")
     List<Order> selectAllOrders();
 
     /**
