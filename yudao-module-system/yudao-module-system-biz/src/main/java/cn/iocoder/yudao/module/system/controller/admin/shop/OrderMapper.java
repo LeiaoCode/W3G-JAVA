@@ -1,4 +1,5 @@
 package cn.iocoder.yudao.module.system.controller.admin.shop;
+
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -20,19 +21,19 @@ public interface OrderMapper {
     })
     int insertOrderItems(@Param("items") List<OrderItem> items);
 
-    @Select("SELECT id, order_id AS orderId, email,payment_status as paymentStatus,total, date FROM orders WHERE email = #{email}")
+    @Select("SELECT id, order_id AS orderId, email,payment_status as paymentStatus,total,payment_url as paymentUrl, date FROM orders WHERE email = #{email}")
     List<Order> selectOrdersByEmail(@Param("email") String email);
 
-    @Select("SELECT id, order_id AS orderId, payment_status as paymentStatus,name, price, quantity FROM order_items WHERE order_id = #{orderId}")
+    @Select("SELECT id, order_id AS orderId,name, price, quantity FROM order_items WHERE order_id = #{orderId}")
     List<OrderItem> selectItemsByOrderId(@Param("orderId") Long orderId);
-
-    @Select("SELECT id, order_id AS orderId, email, total, payment_status as paymentStatus,date FROM orders")
+    @Select("SELECT id, order_id AS orderId, email, total, payment_status as paymentStatus,payment_url as paymentUrl,date FROM orders")
     List<Order> selectAllOrders();
 
     /**
      * 根据订单号更新付款状态
+     *
      * @param orderId 订单编号
-     * @param status 付款状态(0=未支付,1=已支付,2=已退款等)
+     * @param status  付款状态(0=未支付,1=已支付,2=已退款等)
      * @return 更新记录数
      */
     @Update("UPDATE orders SET payment_status = #{status} WHERE order_id = #{orderId}")

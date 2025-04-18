@@ -21,6 +21,7 @@ public class OrderPageReqVO extends PageParam {
 
     @Schema(description = "订单状态", example = "1")
     private int paymentStatus;
+    private String paymentUrl;
     @Schema(description = "用户邮箱", example = "user@example.com")
     private String email;
 

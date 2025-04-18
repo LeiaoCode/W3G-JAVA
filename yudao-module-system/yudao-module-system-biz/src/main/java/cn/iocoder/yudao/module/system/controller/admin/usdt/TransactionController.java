@@ -36,7 +36,7 @@ public class TransactionController {
     private static final String ADDRESS = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
     private static final String TRADE_TYPE = "usdt.trc20";
     private static final String NOTIFY_URL = "http://103.233.255.171:48080/api/v1/orders/callback";
-    private static final String REDIRECT_URL = "";
+    private static final String REDIRECT_URL = "http://localhost/login";
     private static final String SIGN_KEY = "AAGftbbtqB7";
     private static final String externalApiUrl = "http://103.233.255.171:8080/api/v1/order/create-transaction";
 

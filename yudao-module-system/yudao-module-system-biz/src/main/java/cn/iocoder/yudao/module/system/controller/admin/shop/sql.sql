@@ -3,11 +3,12 @@ drop table if exists orders;
 CREATE TABLE `orders`
 (
     `id`             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `order_id`       VARCHAR(100)   NOT NULL UNIQUE,
-    `email`          VARCHAR(255)   NOT NULL,
-    `total`          DECIMAL(10, 2) NOT NULL,
-    `payment_status` int default 0  NOT NULL,
-    `date`           DATETIME       NOT NULL,
+    `order_id`       VARCHAR(100)   default '' NOT NULL UNIQUE,
+    `email`          VARCHAR(255)   default '' NOT NULL,
+    `total`          DECIMAL(10, 2) default 0  NOT NULL,
+    `payment_url`    int            default 0  NOT NULL,
+    `payment_status` VARCHAR(255)   default '' NOT NULL,
+    `date`           DATETIME                  NOT NULL,
     INDEX (`email`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

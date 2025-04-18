@@ -20,6 +20,7 @@ public class Order {
 
     private BigDecimal total;
     private int paymentStatus;
+    private String paymentUrl;
 
     private LocalDateTime date;
 

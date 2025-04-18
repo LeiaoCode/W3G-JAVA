@@ -39,7 +39,7 @@ public class OrderController {
     private static final String ADDRESS = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
     private static final String TRADE_TYPE = "usdt.trc20";
     private static final String NOTIFY_URL = "http://103.233.255.171:48080/api/v1/orders/orderCallback";
-    private static final String REDIRECT_URL = "";
+    private static final String REDIRECT_URL = "http://localhost/login";
     private static final String SIGN_KEY = "AAGftbbtqB7";
     private static final String externalApiUrl = "http://103.233.255.171:8080/api/v1/order/create-transaction";
 
@@ -59,10 +59,10 @@ public class OrderController {
         order.setEmail(orderRequest.getEmail());
         order.setTotal(orderRequest.getTotal());
         order.setDate(LocalDateTime.now());
-
+        String paymentUrl = createTransaction(orderRequest);
+        order.setPaymentUrl(paymentUrl);
         // 插入订单，order.id 会回写
         orderMapper.insertOrder(order);
-
         // 构造并插入 OrderItem
         List<OrderItem> items = orderRequest.getItems().stream().map(req -> {
             OrderItem item = new OrderItem();
@@ -73,7 +73,6 @@ public class OrderController {
             return item;
         }).collect(Collectors.toList());
         orderMapper.insertOrderItems(items);
-        String paymentUrl = createTransaction(orderRequest);
         return success(paymentUrl);
     }
 
@@ -116,10 +115,11 @@ public class OrderController {
 
     /**
      * 创建usdt订单
+     *
      * @param orderRequest
      * @return {@link String }
      */
-    public String createTransaction(@RequestBody @Validated OrderRequest orderRequest) {
+    public String createTransaction(OrderRequest orderRequest) {
         try {
             // 构造请求参数
             BigDecimal amount = orderRequest.getTotal().setScale(2, RoundingMode.HALF_UP);
@@ -133,7 +133,7 @@ public class OrderController {
             params.put("amount", amount.toString());
             params.put("notify_url", NOTIFY_URL);
             params.put("redirect_url", REDIRECT_URL);
-
+            System.out.println(params);
             // 生成签名
             String signature = SignatureGenerator.generateSignature(params, SIGN_KEY);
             params.put("signature", signature);
@@ -146,6 +146,7 @@ public class OrderController {
             ResponseEntity<String> response = restTemplate.postForEntity(externalApiUrl, requestBody, String.class);
             // 解析 JSON 响应
             ObjectMapper objectMappers = new ObjectMapper();
+            System.out.println(response.getBody());
             JsonNode rootNode = objectMappers.readTree(response.getBody());
             JsonNode dataNode = rootNode.get("data");
             if (dataNode != null && dataNode.has("payment_url")) {
