@@ -13,6 +13,7 @@ import java.util.List;
 public class Order {
     @TableId
     private Long id;
+    private Long userId;
 
     private String orderId;
 

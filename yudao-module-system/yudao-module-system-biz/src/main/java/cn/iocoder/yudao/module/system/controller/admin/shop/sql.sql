@@ -4,6 +4,7 @@ CREATE TABLE `orders`
 (
     `id`             BIGINT AUTO_INCREMENT PRIMARY KEY,
     `order_id`       VARCHAR(100)   default '' NOT NULL UNIQUE,
+    `user_id`        VARCHAR(100)   default '' NOT NULL,
     `email`          VARCHAR(255)   default '' NOT NULL,
     `total`          DECIMAL(10, 2) default 0  NOT NULL,
     `payment_url`    int            default 0  NOT NULL,

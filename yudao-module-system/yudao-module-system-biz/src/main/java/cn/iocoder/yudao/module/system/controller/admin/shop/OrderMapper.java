@@ -7,7 +7,7 @@ import java.util.List;
 @Mapper
 public interface OrderMapper {
 
-    @Insert("INSERT INTO orders(order_id, email, total, date) VALUES(#{orderId}, #{email}, #{total}, #{date})")
+    @Insert("INSERT INTO orders(order_id, email, total, payment_url,user_id,date) VALUES(#{orderId}, #{email}, #{total},#{item.paymentUrl},#{item.userId}, #{date})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 
@@ -38,4 +38,13 @@ public interface OrderMapper {
      */
     @Update("UPDATE orders SET payment_status = #{status} WHERE order_id = #{orderId}")
     int updatePaymentStatusByOrderId(@Param("orderId") String orderId, @Param("status") Integer status);
+
+    @Select("SELECT id, order_id AS orderId, email, total, date, payment_status AS paymentStatus, user_id AS userId "
+            + "FROM orders WHERE user_id = #{userId}")
+    List<Order> selectOrdersByUserId(@Param("userId") Long userId);
+
+    @Select("SELECT id, order_id AS orderId, email, total, date, payment_status AS paymentStatus, user_id AS userId "
+            + "FROM orders WHERE email = #{email} AND user_id = #{userId}")
+    List<Order> selectOrdersByEmailAndUserId(@Param("email") String email,
+                                             @Param("userId") Long userId);
 }

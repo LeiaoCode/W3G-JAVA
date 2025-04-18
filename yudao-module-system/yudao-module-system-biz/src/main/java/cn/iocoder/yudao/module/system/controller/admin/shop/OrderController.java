@@ -4,6 +4,7 @@ import cn.hutool.core.lang.UUID;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.object.BeanUtils;
+import cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils;
 import cn.iocoder.yudao.module.system.controller.admin.orders.vo.OrdersSaveReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.projects.vo.ProjectsRespVO;
 import cn.iocoder.yudao.module.system.controller.admin.usdt.utils.SignatureGenerator;
@@ -55,12 +56,15 @@ public class OrderController {
     public CommonResult<String> createOrder(@RequestBody OrderRequest orderRequest) {
         // 构造 Order 实体
         Order order = new Order();
+        Long userId = WebFrameworkUtils.getLoginUserId();
         order.setOrderId(orderRequest.getOrderId());
         order.setEmail(orderRequest.getEmail());
         order.setTotal(orderRequest.getTotal());
         order.setDate(LocalDateTime.now());
+        order.setUserId(userId);
         String paymentUrl = createTransaction(orderRequest);
         order.setPaymentUrl(paymentUrl);
+
         // 插入订单，order.id 会回写
         orderMapper.insertOrder(order);
         // 构造并插入 OrderItem
@@ -80,8 +84,17 @@ public class OrderController {
      * 根据邮箱查询订单及其明细
      */
     @GetMapping("/by-email")
-    public CommonResult<List<Order>> getOrdersByEmail(@RequestParam String email) {
-        List<Order> orders = orderMapper.selectOrdersByEmail(email);
+    public CommonResult<List<Order>> getOrdersByEmail(
+            @RequestParam(required = false) String email) {
+        Long userId = WebFrameworkUtils.getLoginUserId();
+
+        List<Order> orders;
+        if (StringUtils.hasText(email)) {
+            orders = orderMapper.selectOrdersByEmailAndUserId(email, userId);
+        } else {
+            orders = orderMapper.selectOrdersByUserId(userId);
+        }
+        // 加载明细
         for (Order order : orders) {
             List<OrderItem> items = orderMapper.selectItemsByOrderId(order.getId());
             order.setItems(items);
