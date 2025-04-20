@@ -8,6 +8,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <modules>
+
         <module>yudao-dependencies</module>
         <module>yudao-framework</module>
         <!-- Server 主项目 -->
