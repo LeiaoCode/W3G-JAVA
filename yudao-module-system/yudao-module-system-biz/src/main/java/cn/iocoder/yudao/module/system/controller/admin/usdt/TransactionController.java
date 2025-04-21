@@ -96,7 +96,9 @@ public class TransactionController {
             // 解析 JSON 响应
             ObjectMapper objectMappers = new ObjectMapper();
             JsonNode rootNode = objectMappers.readTree(response.getBody());
+            System.out.println(rootNode);
             JsonNode dataNode = rootNode.get("data");
+            System.out.println(dataNode);
 
             if (dataNode != null && dataNode.has("payment_url")) {
                 String paymentUrl = dataNode.get("payment_url").asText();
