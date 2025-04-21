@@ -42,7 +42,7 @@ public class OrderController {
     private static final String NOTIFY_URL = "http://103.233.255.171:48080/api/v1/orders/orderCallback";
     private static final String REDIRECT_URL = "http://localhost/login";
     private static final String SIGN_KEY = "AAGftbbtqB7";
-    private static final String externalApiUrl = "http://103.233.255.171:8080/api/v1/order/create-transaction";
+    private static final String externalApiUrl = "https://pay.liandongstar.live/api/v1/order/create-transaction";
 
     @Autowired
     public OrderController(OrderMapper orderMapper) {
